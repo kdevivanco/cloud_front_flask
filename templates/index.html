@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class=" container-index p-5">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg ">
+         <a href="#" class="navbar-brand"><i class="glyphicon glyphicon-book"></i></a>
+          <a class="navbar-brand poppins-regular" href="#">Book <span class="span-index">Search </span> </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link poppins-regula" href="login.html">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link poppins-regula" href="/register">Register</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>   
+      <div class="container">
+
+          <div class="row">
+              <div class="col-6 col-index">
+                <h1 class="h1 title-index">
+                    Book <br> <span class="span-index">Search</span>
+                </h1>
+                  <p class="title h3 poppins-light">
+  
+                      Find and review your favorite books
+                    </p>
+                    <button class=" btn btn-black">
+                        <a href="/register">
+
+                            Start now
+                        </a>
+                    </button>
+              </div>
+              <div class="col-6 col-index">
+                <img class="center w-90" src="../images/example_index.png" alt="">
+              </div>
+          </div>
+    </div>
+    
+</div>
+  
+{% endblock %}

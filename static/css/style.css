@@ -1,0 +1,159 @@
+.container-index {
+    background-image: url("../images/background_index.png");
+    background-size: cover; /* Ensures the image covers the entire container */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    height: 120vh;
+    width: 100vw;
+}
+
+
+
+.col-index{
+    display: flex;
+    height: 100vh;
+    align-items: left;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title-index.h1{
+    font-size: 150px;
+    color: black;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+}
+
+.title.h3{
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+}
+
+
+.span-index{
+    color: white;
+}
+
+.btn.btn-black{
+  font: "Poppins", sans-serif;
+    margin-top: 5rem;
+    background-color: black;
+    border-radius: 0;
+    color: white;
+    width: 10rem;
+    justify-self: left;
+
+}
+
+
+/* Style the sidebar */
+#sidebar {
+    position: fixed; /* Fix the sidebar to the left side of the page */
+    width: 250px; /* Set the width of the sidebar */
+    height: 100vh; /* Set the height of the sidebar to 100% of the viewport height */
+    background-color: #6c757d; /* Set the background color of the sidebar */
+    padding: 20px; /* Add padding to the sidebar */
+  }
+  
+  /* Style the sidebar header */
+  .sidebar-header {
+    display: flex; /* Arrange the image and text in a row */
+    align-items: center; /* Vertically center the image and text */
+    padding: 10px; /* Add padding to the header */
+    border-bottom: 1px solid #ddd; /* Add a border to the bottom of the header */
+  }
+  
+  .sidebar-header img {
+    width: 60px; /* Set the width of the avatar image */
+    height: 60px; /* Set the height of the avatar image */
+    border-radius: 50%; /* Make the avatar image round */
+  }
+  
+  .sidebar-header h2 {
+    margin-left: 15px; /* Add margin to the left of the welcome message */
+    font-size: 18px; /* Set the font size of the welcome message */
+  }
+  
+  /* Style the sidebar body */
+  .sidebar-body {
+    margin-top: 20px; /* Add margin to the top of the sidebar body */
+  }
+  
+  .sidebar-body ul {
+    list-style: none; /* Remove the default bullet points from the list */
+    padding: 0; /* Remove padding from the list */
+  }
+  
+  .sidebar-body li {
+    margin-bottom: 10px; /* Add margin to the bottom of each list item */
+  }
+  
+  .sidebar-body a {
+    display: block; /* Make the links fill the width of the list item */
+    color: #000; /* Set the color of the links */
+    text-decoration: none; /* Remove underlines from the links */
+    font-size: 16px; /* Set the font size of the links */
+    font: bold 'Poppins', sans-serif;
+    color:white;
+    font-size: 2rem;
+  }
+
+  .card-body,.card-text,.card-title{
+    font: 'Poppins', sans-serif !important;
+  }
+
+
+  .star-row{
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+  }
+  .star *{
+    color: rgb(244, 214, 61);
+    font-size:3rem;
+  }
+
+  .navbar{
+    border-radius: 0;
+  }
+  .sidebar-icon{
+    font-size: 2rem;
+  }
+
+  .br0{
+    border-radius: 0!important;
+  }
+  
+  .sidebar-body a:hover {
+    color: black; /* Change the color of the links on hover */
+    text-decoration: none;
+  }
+
+  .sidebar-link{
+    font: 'Century gothic', sans-serif;
+    color:white;
+    font-size: 2rem;
+  }
+
+  .card-features{
+    background-color: #62615c;
+  }
+
+  .feature-title{
+    font-size: 50px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .a-title{
+    font-size: 50px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin-bottom: 5rem;
+  }
+
+  .btn{
+    font: "Poppins", sans-serif;
+  }

@@ -1,0 +1,44 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="col-10">
+    <div class="container">
+        <h1>Showing results for... <span id="search-result">{{isbn}}  </span></h1>
+            <div class="container pt-5 mt-5">
+                <div class="card mb-3">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img src="..." class="card-img" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title"> <a href="/book/{{book.isbn}}">{{book.title}}</a></h5>
+                                <p class="card-text">{{book.description}}</p>
+                                <p class="card-text"><span style="font-weight: bold;">Genre:</span> {{book.genre}}</p>
+                                <p class="card-text"><small class="text-muted">{{book.pub_year}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <form class="p-5" method="POST" action="/submit_review">
+                        <div class="form-group">
+                            <label for="rating">Rating:</label>
+                            <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Review:</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" name="review_text" rows="3" required></textarea>
+                        </div>
+                        <button class="btn" type="submit">Add review</button>
+                    </form>
+                </div>
+            </div>
+        
+
+    </div>
+    
+   </div>
+
+{% endblock %}
