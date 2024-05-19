@@ -75,7 +75,7 @@ def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/add-to-list', methods=['POST'])
-def submit_review():
+def add_to_list():
     if request.method == 'POST':
         # Check if user_id exists in session
         if 'user_id' not in session:
@@ -90,6 +90,7 @@ def submit_review():
     
         # Make the POST request to the review endpoint
         endpoint = f'{BOOKLIST_ENDPOINT}/record/{user_id}/{book_id}?type={list_type}'
+        pdb.set_trace()
         response = requests.post(endpoint)
         
         # Check the response status code
@@ -125,14 +126,12 @@ def submit_review():
         
         # Make the POST request to the review endpoint
         response = requests.post(REVIEW_ENDPOINT, json=payload)
-
-        pdb.set_trace()
         
         # Check the response status code
         if response.status_code == 200:
             return redirect('/dashboard')
         else:
-            return jsonify({"error": "Failed to submit review."}), response.status_code
+            return redirect('/dashboard')
 
 
 

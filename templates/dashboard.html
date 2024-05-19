@@ -16,9 +16,9 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    
-                  <img src="../images/features.png" class=" mt-5 center img-fluid rounded-start" style="max-width: 120%!important" alt="...">
+                    <img src="{{ url_for('static', filename='images/features.png') }}" class="mt-5 center img-fluid rounded-start" style="max-width: 120%!important" alt="...">
                 </div>
+                
             </div>
           </div>
     </div>
@@ -28,7 +28,7 @@
             <div class="card mb-3">
                 <div class="row g-0">
                   <div class="col-md-3">
-                    <img src="..." class="img-fluid rounded-start" alt="...">
+                    <img src="{{ url_for('static', filename='images/sample_cover.jpeg') }}" class=" p-3 img-fluid rounded-start" alt="...">
                   </div>
                   <div class="col-md-5">
                     <div class="card-body">
