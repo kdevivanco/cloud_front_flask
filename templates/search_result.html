@@ -19,8 +19,29 @@
                                 <p class="card-text"><span style="font-weight: bold;">Genre:</span> {{book.genre}}</p>
                                 <p class="card-text"><small class="text-muted">{{book.pub_year}}</small></p>
                             </div>
+                            <form action="/add-to-list" method="post">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <select class="form-select" name="list" id="listSelect" name="listSelect" required>
+                                                <option value="" disabled selected>Select a list</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="readed">Reading</option>
+                                                <option value="complete">Complete</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="hidden" name="bookId" value="{id}">
+                                        <button type="submit" class="btn btn-dark">Add to List</button>
+                                    </div>
+                                </div>
+                                
+                            </form>
                         </div>
                     </div>
+
+
         
                     <form class="p-5" method="POST" action="/submit_review">
                         <div class="form-group">

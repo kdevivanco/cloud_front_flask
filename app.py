@@ -6,6 +6,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for session management
 # Define the URL of the endpoint to submit reviews
 REVIEW_ENDPOINT = "http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8000/review/"
+BOOKLIST_ENDPOINT = "http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8001"
 
 @app.route('/')
 def home():
@@ -73,6 +74,32 @@ def search(isbn):
 def dashboard():
     return render_template('dashboard.html')
 
+@app.route('/add-to-list', methods=['POST'])
+def submit_review():
+    if request.method == 'POST':
+        # Check if user_id exists in session
+        if 'user_id' not in session:
+            return jsonify({"error": "User not authenticated."}), 401
+        
+        # Retrieve user_id from session
+        user_id = session['user_id']
+        
+        book_id = session['current_book']
+        
+        list_type = request.form['list']
+    
+        # Make the POST request to the review endpoint
+        endpoint = f'{BOOKLIST_ENDPOINT}/record/{user_id}/{book_id}?type={list_type}'
+        response = requests.post(endpoint)
+        
+        # Check the response status code
+        if response.status_code == 200:
+            return redirect('/dashboard')
+        else:
+            return jsonify({"error": "Failed to add book to list."}), response.status_code
+
+
+
 
 @app.route('/submit_review', methods=['POST'])
 def submit_review():
@@ -106,6 +133,7 @@ def submit_review():
             return redirect('/dashboard')
         else:
             return jsonify({"error": "Failed to submit review."}), response.status_code
+
 
 
 
