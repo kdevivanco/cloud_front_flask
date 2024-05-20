@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import requests
-import pdb
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for session management
@@ -90,7 +89,6 @@ def add_to_list():
     
         # Make the POST request to the review endpoint
         endpoint = f'{BOOKLIST_ENDPOINT}/record/{user_id}/{book_id}?type={list_type}'
-        pdb.set_trace()
         response = requests.post(endpoint)
         
         # Check the response status code
