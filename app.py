@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import requests
+from settings import LB_DNS
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for session management
 # Define the URL of the endpoint to submit reviews
-REVIEW_ENDPOINT = "http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8000/review/"
-BOOKLIST_ENDPOINT = "http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8001"
+REVIEW_ENDPOINT = f"http://{LB_DNS}:8000/review/"
+BOOKLIST_ENDPOINT = f"http://{LB_DNS}:8001"
 
 @app.route('/')
 def home():
@@ -18,7 +19,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
         # Assuming your backend API endpoint for login is /api/login
-        response = requests.post('http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8000/api/login', json={'email': email, 'password': password})
+        response = requests.post('http://{LB_DNS}:8000/user/login', json={'email': email, 'password': password})
         if response.status_code == 200:
             user_data = response.json()
             session['user_id'] = user_data['userId']
@@ -48,7 +49,7 @@ def register():
             'email': email,
             'password': password
         }
-        response = requests.post('http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8000/user/', json=user_data)
+        response = requests.post(f'http://{LB_DNS}:8000/user/', json=user_data)
         if response.ok:
             result = response.json()
             session['user_id'] = result.get('id')  # Adjust based on actual field name
@@ -61,7 +62,7 @@ def register():
 @app.route('/search/<isbn>')
 def search(isbn):
     
-    response = requests.get(f'http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8000/book/{isbn}')
+    response = requests.get(f'http://{LB_DNS}:8000/book/{isbn}')
     if response.ok:
         session['current_book'] = isbn
         book = response.json()
