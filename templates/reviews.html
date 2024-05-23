@@ -1,0 +1,48 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="col-10">
+    <div class="container">
+        <h1>Your Reviews</h1>
+        <div class="container pt-5 mt-5">
+            <div class="row">
+                {%for review in reviews%}
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img src="{{review.book.image_url}}" class=" p-3 img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-5">
+                            <div class="card-body">
+                                <h5 class="card-title">{{review.book.title}}</h5>
+                                <p class="card-text">{{review.description}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row ">
+                                <div class="row star-row mt-5">
+                                    {%for r in range(0,review.rating)%}
+                                    <div class="col-2 star"><i class="sidebar-icon glyphicon glyphicon-star"></i></div>
+                                    {%endfor%}
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="col-4">
+    
+                                    <a href="/review/{{review.id}}" method="delete" class="btn btn-danger">DELETE</a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="/review/{{review.id}}/edit" class="btn btn-primary">EDIT</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+
+            </div>
+        </div>
+
+        {%endblock%}

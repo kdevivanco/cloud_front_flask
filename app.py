@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import requests
-
+import pdb
+import pprint
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for session management
 # Define the URL of the endpoint to submit reviews
-REVIEW_ENDPOINT = "http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8002/review/"
-BOOKLIST_ENDPOINT = "http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8001"
-USER_ENDPOINT = 'http://parcial-lb-2019743473.us-east-1.elb.amazonaws.com:8000'
+# 8000
+REVIEW_ENDPOINT = "http://parcial-lb-533779242.us-east-1.elb.amazonaws.com:8002/review/"
+BOOKLIST_ENDPOINT = "http://parcial-lb-533779242.us-east-1.elb.amazonaws.com:8001"
+BOOKUSER_ENDPOINT = 'http://parcial-lb-533779242.us-east-1.elb.amazonaws.com:8000'
 
 @app.route('/')
 def home():
@@ -22,14 +24,17 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        endpoint = f'{BOOKUSER_ENDPOINT}/user/login'
         
-        response = requests.post('{USER_ENDPOINT}/api/login', json={'email': email, 'password': password})
+        response = requests.post(endpoint, json={'email': email, 'password': password})
         if response.status_code == 200:
             user_data = response.json()
-            session['user_id'] = user_data['userId']
-            return redirect(url_for('dashboard'))
+            session['user_id'] = 3
+            session['email'] = user_data['email']
+            return redirect('/dashboard')
         else:
-            return "Login failed, please try again."
+            return redirect('/login')
+        
     return render_template('login.html')
 
 @app.route('/register', methods=['GET'])
@@ -56,14 +61,14 @@ def register():
             'password': password
         }
 
-        response = requests.post('{USER_ENDPOINT}/user/', json=user_data)
+        response = requests.post(f'{BOOKUSER_ENDPOINT}/user', json=user_data)
 
         if response.ok:
             result = response.json()
             session['user_id'] = result.get('id') 
             
             #Crear las listas:
-            list_response = requests.post(f'{BOOKLIST_ENDPOINT}/list/all/{session['user_id']}')
+            list_response = requests.post(f'{BOOKLIST_ENDPOINT}/list/all/{session["user_id"]}')
             if list_response.ok:
                 return redirect('/dashboard')
         else:
@@ -79,7 +84,7 @@ def load_edit():
     if 'user_id' not in session:
         return redirect('/login')
     user_id = session['user_id']
-    response = requests.get(f'{USER_ENDPOINT}/user/{user_id}')
+    response = requests.get(f'{BOOKUSER_ENDPOINT}/user/{user_id}')
     if response.ok:
         user = response.json()
         return render_template('edit_profile.html', user=user)
@@ -108,7 +113,7 @@ def update_profile():
         'password': password
     }
     
-    response = requests.put(f'{USER_ENDPOINT}/user/{user_id}', json=user_data)
+    response = requests.put(f'{BOOKUSER_ENDPOINT}/user/{user_id}', json=user_data)
     if response.ok:
         return redirect('/dashboard')
     else:
@@ -118,14 +123,14 @@ def update_profile():
 '''-------------------- Books CRUD --------------------'''
 # No hacemos create, update ni delete desde front porque se cargan mediante postman - admin
 
-@app.route('/search/<isbn>')
+@app.route('/book/<isbn>')
 def search(isbn):
     '''---------------- READ Book ----------------'''
-
-    response = requests.get(f'{USER_ENDPOINT}/book/{isbn}')
+    response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{isbn}')
     if response.ok:
         session['current_book'] = isbn
         book = response.json()
+        # print(book['description'])
         return render_template('search_result.html',isbn=isbn, book=book)
     else:
         return redirect('/dashboard')
@@ -134,13 +139,33 @@ def search(isbn):
 
 @app.route('/dashboard')
 def dashboard():
-    #Get user 
+    if 'user_id' not in session:
+        return redirect('/login')
+    user_id = session['user_id']
+    response = requests.get(f'{BOOKUSER_ENDPOINT}/user/{user_id}')
 
-    #Get 3 latest reviews
+    if response.ok:
+        user = response.json()
+    
+    user_reviews = []
+    response = requests.get(f'{REVIEW_ENDPOINT}user/{user_id}')
+    if response.ok:
+        user_reviews = response.json()
 
-    #Get 6 Latest books in the api 
+        for review in user_reviews: 
+            book_id = review['book_id']
+            book_response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{book_id}')
+            if book_response.ok:
+                review['book'] = book_response.json()
+    else:
+        user_reviews = []
+    
+    latest_books = []
+    response = requests.get(f'{BOOKUSER_ENDPOINT}/book/all/')
+    if response.ok:
+        latest_books = response.json()
 
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', user=user, user_reviews =user_reviews, latest_books=latest_books)
 
 
 '''---------------- BookList  & Records CRUD ---------------- '''
@@ -160,10 +185,10 @@ def add_to_list():
         endpoint = f'{BOOKLIST_ENDPOINT}/record/{user_id}/{book_id}?type={list_type}'
         response = requests.post(endpoint)
         
-        if response.status_code == 200:
+        if response.status_code == 201:
             return redirect('/dashboard')
         else:
-            return jsonify({"error": "Failed to add book to list."}), response.status_code
+            return redirect(f'/book/{book_id}')
 
 @app.route('/lists')
 def lists():
@@ -174,6 +199,16 @@ def lists():
     response = requests.get(f'{BOOKLIST_ENDPOINT}/list/all/{user_id}')
     if response.ok:
         lists = response.json()
+        lists = lists['user_list']
+        for list in lists: 
+            list['books'] = []
+            if len(list['records'])>0:
+                for record in list['records']:
+                    book_id = record['book_id']
+                    book_response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{book_id}')
+                    if book_response.ok:
+                        list['books'].append(book_response.json())
+
         return render_template('lists.html', lists=lists)
     else:
         return redirect('/dashboard')
@@ -193,9 +228,8 @@ def list_detail(list_id):
     if response.ok:
         for obj in response: 
             book_id = obj['book_id']
-            book_response = requests.get(f'{USER_ENDPOINT}/book/{book_id}')
+            book_response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{book_id}')
             books.append(book_response.json())
-        
         return render_template('list_detail.html', books=books, list_type=list_type)
     else:
         return redirect('/dashboard')
@@ -243,13 +277,12 @@ def submit_review():
         
         payload = {
             "user_id": user_id,
-            "book_id": int(book_id),
+            "book_id": (book_id),
             "rating": int(rating),
             "description": review_text
         }
         
         response = requests.post(REVIEW_ENDPOINT, json=payload)
-        
         if response.status_code == 200:
             return redirect('/dashboard')
         else:
@@ -263,11 +296,18 @@ def load_user_reviews():
     if 'user_id' not in session:
         return redirect('/login')
     user_id = session['user_id']
-
-    response = requests.get(f'{REVIEW_ENDPOINT}/{user_id}')
+    user_reviews = []
+    response = requests.get(f'{REVIEW_ENDPOINT}user/{user_id}')
     if response.ok:
-        reviews = response.json()
-        return render_template('reviews.html', reviews=reviews)
+        user_reviews = response.json()
+
+        for review in user_reviews: 
+            book_id = review['book_id']
+            book_response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{book_id}')
+            if book_response.ok:
+                review['book'] = book_response.json()
+        
+        return render_template('reviews.html', reviews=user_reviews)
     else:
         return redirect('/dashboard')
     

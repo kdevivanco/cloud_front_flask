@@ -10,12 +10,12 @@
                 <div class="card mb-3">
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                            <img src="..." class="card-img" alt="...">
+                            <img src="{{book.image_url}}" class="card-img" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title"> <a href="/book/{{book.isbn}}">{{book.title}}</a></h5>
-                                <p class="card-text">{{book.description}}</p>
+                                <h2  class="card-title h2"> {{book.title}}</a></h2> 
+                                <h5 class="card-text">{{book.description}}</h5>
                                 <p class="card-text"><span style="font-weight: bold;">Genre:</span> {{book.genre}}</p>
                                 <p class="card-text"><small class="text-muted">{{book.pub_year}}</small></p>
                             </div>
