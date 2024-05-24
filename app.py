@@ -29,13 +29,18 @@ def login():
         response = requests.post(endpoint, json={'email': email, 'password': password})
         if response.status_code == 200:
             user_data = response.json()
-            session['user_id'] = 3
+            session['user_id'] = user_data['id']
             session['email'] = user_data['email']
             return redirect('/dashboard')
         else:
             return redirect('/login')
         
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 @app.route('/register', methods=['GET'])
 def show_register():
@@ -136,6 +141,15 @@ def search(isbn):
         return redirect('/dashboard')
     
 
+@app.route('/search-by-isbn', methods=['POST'])
+def search_by_isbn():
+    '''---------------- READ Book ----------------'''
+    isbn = request.form['isbn']
+    response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{isbn}')
+    if response.ok:
+        return redirect(f'/book/{isbn}')
+    else:
+        return render_template('not_found.html', isbn=isbn)
 
 @app.route('/dashboard')
 def dashboard():
@@ -162,8 +176,11 @@ def dashboard():
     
     latest_books = []
     response = requests.get(f'{BOOKUSER_ENDPOINT}/book/all/')
+    #get last 6 elements of response:
+ 
     if response.ok:
         latest_books = response.json()
+        latest_books = latest_books[-7:-1]
 
     return render_template('dashboard.html', user=user, user_reviews =user_reviews, latest_books=latest_books)
 
@@ -207,7 +224,9 @@ def lists():
                     book_id = record['book_id']
                     book_response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{book_id}')
                     if book_response.ok:
-                        list['books'].append(book_response.json())
+                        book = book_response.json() 
+                        book['list_id'] = record['list_id']
+                        list['books'].append(book)
 
         return render_template('lists.html', lists=lists)
     else:
@@ -244,13 +263,13 @@ def delete_record(list_id, book_id):
     
     # Security check:
     user_id = session['user_id']
-    response = requests.get(f'{BOOKLIST_ENDPOINT}/list/all/{user_id}')
-    list_ids = []
-    if response.ok:
-        for obj in response:
-            list_ids.append(obj['id'])
-        if list_id not in list_ids:
-            return redirect('/dashboard')
+    # response = requests.get(f'{BOOKLIST_ENDPOINT}/list/all/{user_id}')
+    # list_ids = []
+    # if response.ok:
+    #     for obj in response:
+    #         list_ids.append(obj['id'])
+    #     if list_id not in list_ids:
+    #         return redirect('/dashboard')
         
     response = requests.delete(f'{BOOKLIST_ENDPOINT}/record/{list_id}/{book_id}')
     if response.ok:
@@ -335,15 +354,21 @@ def load_edit_review(id):
         return redirect('/login')
     user_id = session['user_id']
     
-    response = requests.get(f'{REVIEW_ENDPOINT}/{id}')
+    response = requests.get(f'{REVIEW_ENDPOINT}{id}')
     if response.ok:
         review = response.json()
-        return render_template('edit_review.html', review=review)
+        book_id = review['book_id']
+        book_response = requests.get(f'{BOOKUSER_ENDPOINT}/book/{book_id}')
+        if book_response.ok:
+            review['book'] = book_response.json()
+        return render_template('single_review.html', review=review)
     else:
         return redirect('/dashboard')
     
 
-@app.route('/review/<id>', methods=['POST'])
+
+
+@app.route('/review/<id>/edit', methods=['POST'])
 def update_review(id):
     '''---------------- UPDATE un review -----------------'''
 
@@ -360,21 +385,21 @@ def update_review(id):
         "description": review_text
     }
     
-    response = requests.put(f'{REVIEW_ENDPOINT}/{id}', json=payload)
+    response = requests.put(f'{REVIEW_ENDPOINT}{id}', json=payload)
     
     if response.ok:
         return redirect('/review/{id}')
     else:
         return redirect('/dashboard')
 
-@app.route('/review/<id>', methods=['DELETE'])
+@app.route('/review/delete/<id>')
 def delete_review(id):
     '''---------------- DELETE un review -----------------'''
 
     if 'user_id' not in session:
         return redirect('/dashboard')
     
-    response = requests.delete(f'{REVIEW_ENDPOINT}/{id}')
+    response = requests.delete(f'{REVIEW_ENDPOINT}{id}')
     if response.ok:
         return redirect('/reviews')
     else:

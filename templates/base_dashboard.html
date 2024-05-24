@@ -24,14 +24,18 @@
            <span class="navbar-toggler-icon"></span>
          </button>
          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-             <li class="nav-item">
-               <a class="nav-link poppins-regula" href="login.html">Login</a>
-             </li>
-             <li class="nav-item">
-               <a class="nav-link poppins-regula" href="register.html">Register</a>
-             </li>
-           </ul>
+           <!--Searchbar:-->
+           <div class="row">
+            <div class="col-3">
+
+            </div>
+            <div class="col-6">
+              <form class="d-flex" action="/search-by-isbn" method="post">
+                <input class="form-control me-2" name="isbn"style="max-width: 300px;" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-light" type="submit">Search by isbn</button>
+              </form>
+            </div>
+           </div>
          </div>
        </div>
      </nav>   
@@ -63,7 +67,7 @@
                                   <div class="col-10 col-sidebar"><a class="a-title" href="/reviews">My reviews</a></div>
                               </div>
                           </li>
-                            <li class="p-3">
+                            <!-- <li class="p-3">
                                 <div class="row row-sidebar">
                                     <div class="col-2"><i class="text-light sidebar-icon glyphicon glyphicon-user"></i></div>
                                     <div class="col-10 col-sidebar"><a class="a-title" href="#">Profile</a></div>
@@ -74,11 +78,11 @@
                                     <div class="col-2"><i class="text-light sidebar-icon glyphicon glyphicon-wrench"></i></div>
                                     <div class="col-10 col-sidebar"><a class="a-title" href="#">Settings</a></div>
                                 </div>
-                            </li>
+                            </li> -->
                             <li class="p-3">
                                 <div class="row row-sidebar">
                                     <div class="col-2"><i class="text-light sidebar-icon glyphicon glyphicon-log-out"></i></div>
-                                    <div class="col-10 col-sidebar"><a class="a-title" href="#">Log out</a></div>
+                                    <div class="col-10 col-sidebar"><a class="a-title" href="/logout">Log out</a></div>
                                 </div>
                             </li>
 
